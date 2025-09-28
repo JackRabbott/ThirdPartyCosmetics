@@ -22,48 +22,7 @@ jobs:
       - name: Build ThirdPartyCosmetics
         run: ./gradlew build
 
-      - name: Archive Artifacts
-        uses: GeyserMC/actions/upload-multi-artifact@master
-        if: success()
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
         with:
           artifacts: build/libs/ThirdPartyCosmetics.jar
-
-      - name: Get Version
-        if: ${{ success() && github.repository == 'GeyserMC/ThirdPartyCosmetics' && github.ref_name == 'master' }}
-        id: get-version
-        run: |
-          version=$(cat build.gradle | grep -o "version '[0-9\\.]*'" | cut -d" " -f2 | sed "s/'//g")
-          echo "VERSION=${version}" >> $GITHUB_OUTPUT
-
-      - name: Get Release Metadata
-        if: ${{ success() && github.repository == 'GeyserMC/ThirdPartyCosmetics' && github.ref_name == 'master' }}
-        uses: GeyserMC/actions/release@master
-        id: metadata
-        with:
-          appID: ${{ secrets.RELEASE_APP_ID }}
-          appPrivateKey: ${{ secrets.RELEASE_APP_PK }}
-          files: |
-            thirdpartycosmetics:build/libs/ThirdPartyCosmetics.jar
-          releaseEnabled: false
-          saveMetadata: true
-          releaseProject: 'thirdpartycosmetics'
-          releaseVersion: ${{ steps.get-version.outputs.VERSION }}
-
-      - name: Publish to Downloads API
-        if: ${{ success() && github.repository == 'GeyserMC/ThirdPartyCosmetics' && github.ref_name == 'master' }}
-        uses: GeyserMC/actions/upload-release@master
-        with:
-          username: ${{ vars.DOWNLOADS_USERNAME }}
-          privateKey: ${{ secrets.DOWNLOADS_PRIVATE_KEY }}
-          host: ${{ secrets.DOWNLOADS_SERVER_IP }}
-          files: |
-            build/libs/ThirdPartyCosmetics.jar
-          changelog: ${{ steps.metadata.outputs.body }}
-
-      - name: Notify Discord
-        if: ${{ (success() || failure()) && github.repository == 'GeyserMC/ThirdPartyCosmetics' }}
-        uses: GeyserMC/actions/notify-discord@master
-        with:
-          discordWebhook: ${{ secrets.DISCORD_WEBHOOK }}
-          status: ${{ job.status }}
-          body: ${{ steps.metadata.outputs.body }}
