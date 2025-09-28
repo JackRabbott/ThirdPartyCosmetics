@@ -16,4 +16,4 @@ ThirdPartyCosmetics is an extension that adds support for loading ears and other
 | [OptiFine](https://optifine.net/) | Capes |
 | [LabyMod](https://www.labymod.net/) | Capes |
 
-Compiled 9/28/2025 through GitHub actions.
+Compiled 9/28/2025 using GitHub actions.
