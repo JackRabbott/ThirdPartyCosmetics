@@ -25,4 +25,5 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          artifacts: build/libs/ThirdPartyCosmetics.jar
+          name: ThirdPartyCosmetics
+          path: build/libs/ThirdPartyCosmetics.jar
